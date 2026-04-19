@@ -3,50 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <title>Settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-0: #0b1214;
+            --bg-1: #111f1f;
+            --bg-2: #0c1718;
+            --ink: #e7f0ee;
+            --muted: #9fb4b0;
+            --accent: #d6a24a;
+            --accent-2: #1fb7a6;
+            --card: rgba(16, 28, 28, 0.78);
+            --line: rgba(214, 162, 74, 0.25);
+            --shadow: rgba(0, 0, 0, 0.35);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
-        .navbar { background: #6c63ff; color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
-        .navbar a { color: white; text-decoration: none; font-size: 14px; }
-        .container { max-width: 700px; margin: 30px auto; padding: 0 20px; }
-        .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-        .card h3 { color: #6c63ff; margin-bottom: 20px; font-size: 18px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; font-weight: 600; }
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-0) 0%, var(--bg-1) 55%, var(--bg-2) 100%);
+            min-height: 100vh;
+            color: var(--ink);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -40%;
+            right: -30%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(214, 162, 74, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+            animation: drift 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -35%;
+            left: -25%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(31, 183, 166, 0.16) 0%, transparent 70%);
+            pointer-events: none;
+            animation: drift-reverse 18s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+        }
+
+        @keyframes drift-reverse {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+        
+        nav {
+            background: rgba(11, 18, 20, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+        }
+
+        .navbar-brand {
+            font-family: 'Syne', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(110deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: var(--accent-2);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 13px;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .signout-btn {
+            background: linear-gradient(110deg, var(--accent), #f0c46e);
+            color: #1a1410;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .signout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(214, 162, 74, 0.25);
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 40px auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 20px 40px var(--shadow);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: rgba(31, 183, 166, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            color: var(--accent);
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .form-group { margin-bottom: 18px; }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
         input, select {
             width: 100%;
-            padding: 10px 14px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border: 1px solid rgba(31, 183, 166, 0.35);
+            background: rgba(16, 28, 28, 0.7);
+            border-radius: 10px;
             font-size: 14px;
+            color: var(--ink);
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
+            font-family: 'Manrope', sans-serif;
         }
-        input:focus, select:focus { border-color: #6c63ff; }
+
+        input:focus, select:focus {
+            border-color: var(--accent-2);
+            background: rgba(16, 28, 28, 0.9);
+            box-shadow: 0 0 12px rgba(31, 183, 166, 0.2);
+        }
+
         .save-btn {
-            background: #6c63ff;
-            color: white;
+            background: linear-gradient(110deg, var(--accent), #f0c46e);
+            color: #1a1410;
             border: none;
             padding: 12px 30px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 14px;
-            font-weight: 600;
-            margin-top: 5px;
+            font-weight: 700;
+            margin-top: 8px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Manrope', sans-serif;
         }
-        .save-btn:hover { background: #5a52d5; }
-        .success { color: green; font-size: 13px; margin-top: 10px; display: none; }
+
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(214, 162, 74, 0.25);
+        }
+
+        .success {
+            color: #7ed79f;
+            font-size: 13px;
+            margin-top: 12px;
+            display: none;
+            font-weight: 600;
+        }
+
+        @media (max-width: 900px) {
+            nav { padding: 0 20px; }
+            .navbar-container { flex-direction: column; height: auto; padding: 16px 0; gap: 12px; }
+            .navbar-links { flex-wrap: wrap; justify-content: center; }
+        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <h2>⚙️ Settings</h2>
-        <div><a href="/chat">← Back to Chat</a> &nbsp; <a href="/api/logout">Logout</a></div>
-    </div>
+    <nav>
+        <div class="navbar-container">
+            <a class="navbar-brand" href="/">AICHAT</a>
+            <div class="navbar-links">
+                <a href="/chat">Chat</a>
+                <a href="/settings">Settings</a>
+                <div class="nav-right">
+                    <div class="user-profile">
+                        <img id="profileImg" class="profile-img" alt="Profile">
+                        <span id="profileName" class="profile-name"></span>
+                    </div>
+                    <button class="signout-btn" id="logoutBtn">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <div class="container">
         <div class="card">
-            <h3>📱 WhatsApp Integration</h3>
+            <h3>WhatsApp Integration</h3>
             <div class="form-group">
                 <label>WhatsApp Business Number</label>
                 <input type="text" id="wa_number" placeholder="+92 300 1234567">
@@ -56,11 +284,11 @@
                 <input type="password" id="wa_key" placeholder="Enter your WhatsApp API key">
             </div>
             <button class="save-btn" onclick="saveSettings()">Save WhatsApp Settings</button>
-            <p class="success" id="wa_success">✅ Saved successfully!</p>
+            <p class="success" id="wa_success">Saved successfully.</p>
         </div>
 
         <div class="card">
-            <h3>🛒 E-commerce Integration</h3>
+            <h3>E-commerce Integration</h3>
             <div class="form-group">
                 <label>Store Platform</label>
                 <select id="store_type">
@@ -80,13 +308,91 @@
                 <input type="password" id="store_key" placeholder="Enter your store API key">
             </div>
             <button class="save-btn" onclick="saveSettings()">Save Store Settings</button>
-            <p class="success" id="store_success">✅ Saved successfully!</p>
+            <p class="success" id="store_success">Saved successfully.</p>
         </div>
     </div>
 
+    <script type="module">
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
+
+        const logoutBtn = document.getElementById('logoutBtn');
+        const profileImg = document.getElementById('profileImg');
+        const profileName = document.getElementById('profileName');
+
+        const syncSession = async (user) => {
+            const res = await fetch('/api/google-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    email: user.email,
+                    name: user.displayName,
+                    photoURL: user.photoURL
+                })
+            });
+
+            if (!res.ok) {
+                throw new Error('Session sync failed');
+            }
+
+            return res.json();
+        };
+
+        const loadFirebaseConfig = async () => {
+            const res = await fetch('/api/firebase-config', { credentials: 'same-origin' });
+            if (!res.ok) {
+                throw new Error('Failed to load Firebase config');
+            }
+            return res.json();
+        };
+
+        const initFirebase = async () => {
+            const firebaseConfig = await loadFirebaseConfig();
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+
+            logoutBtn.addEventListener('click', () => {
+                signOut(auth)
+                    .then(() => {
+                        fetch('/api/logout', { credentials: 'same-origin' })
+                            .then(() => window.location.href = '/')
+                            .catch(err => console.error('Logout error:', err));
+                    })
+                    .catch((error) => console.error('Logout error:', error));
+            });
+
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) {
+                    window.location.href = '/';
+                    return;
+                }
+
+                profileImg.src = user.photoURL || 'https://via.placeholder.com/36';
+                profileName.textContent = user.displayName || 'User';
+
+                try {
+                    await syncSession(user);
+                    await loadSettings();
+                } catch (error) {
+                    window.location.href = '/';
+                }
+            });
+        };
+
+        initFirebase().catch((error) => {
+            console.error('Firebase init failed:', error);
+            window.location.href = '/';
+        });
+    </script>
+
     <script>
         async function loadSettings() {
-            const res = await fetch('/api/settings');
+            const res = await fetch('/api/settings', { credentials: 'same-origin' });
+            if (res.status === 401) {
+                window.location.href = '/';
+                return;
+            }
             const data = await res.json();
             if (data.whatsapp_number) document.getElementById('wa_number').value = data.whatsapp_number;
             if (data.whatsapp_api_key) document.getElementById('wa_key').value = data.whatsapp_api_key;
@@ -106,6 +412,7 @@
             await fetch('/api/settings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
                 body: JSON.stringify(payload)
             });
             document.querySelectorAll('.success').forEach(el => {
@@ -113,8 +420,6 @@
                 setTimeout(() => el.style.display = 'none', 3000);
             });
         }
-
-        loadSettings();
     </script>
 </body>
 </html>

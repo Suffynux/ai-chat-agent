@@ -4,7 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chat Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-0: #0b1214;
+            --bg-1: #111f1f;
+            --bg-2: #0c1718;
+            --ink: #e7f0ee;
+            --muted: #9fb4b0;
+            --accent: #d6a24a;
+            --accent-2: #1fb7a6;
+            --card: rgba(16, 28, 28, 0.78);
+            --line: rgba(214, 162, 74, 0.25);
+            --shadow: rgba(0, 0, 0, 0.35);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,133 +28,359 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f5f5;
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(135deg, var(--bg-0) 0%, var(--bg-1) 55%, var(--bg-2) 100%);
+            min-height: 100vh;
+            color: var(--ink);
+            overflow-x: hidden;
         }
-        
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -40%;
+            right: -30%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(214, 162, 74, 0.18) 0%, transparent 70%);
+            pointer-events: none;
+            animation: drift 20s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -35%;
+            left: -25%;
+            width: 70%;
+            height: 70%;
+            background: radial-gradient(circle, rgba(31, 183, 166, 0.16) 0%, transparent 70%);
+            pointer-events: none;
+            animation: drift-reverse 18s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+        }
+
+        @keyframes drift-reverse {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-30px, 30px); }
+        }
+
+        nav {
+            background: rgba(11, 18, 20, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--line);
+            padding: 0 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 72px;
+        }
+
+        .navbar-brand {
+            font-family: 'Syne', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(110deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .navbar-links a {
+            color: var(--muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-links a:hover {
+            color: var(--accent-2);
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: 14px;
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .signout-btn {
+            background: linear-gradient(110deg, var(--accent), #f0c46e);
+            color: #1a1410;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .signout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(214, 162, 74, 0.25);
+        }
+
+        #loginBtn {
+            background: linear-gradient(110deg, var(--accent), #f0c46e);
+            color: #1a1410;
+            border: none;
+            padding: 14px 34px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-family: 'Manrope', sans-serif;
+            width: 100%;
+        }
+
+        #loginBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(214, 162, 74, 0.3);
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 90px 20px 80px;
+            position: relative;
+            z-index: 1;
         }
-        
-        header {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: slideUp 0.8s ease;
         }
-        
-        h1 {
-            color: #333;
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        
-        .auth-section {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        .hero-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 62px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(120deg, var(--ink), var(--muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            line-height: 1.05;
         }
-        
-        button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--muted);
+            font-weight: 500;
         }
-        
-        button:hover {
-            background: #0056b3;
+
+        .auth-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            padding: 48px;
+            border-radius: 18px;
+            max-width: 480px;
+            margin: 40px auto 0;
+            text-align: center;
+            box-shadow: 0 30px 60px var(--shadow);
+            animation: slideUp 0.8s ease 0.2s both;
         }
-        
+
         #userStatus {
-            margin-top: 10px;
-            padding: 10px;
-            background: #f0f0f0;
-            border-radius: 4px;
+            margin-top: 20px;
+            padding: 18px;
+            background: rgba(31, 183, 166, 0.08);
+            border: 1px solid rgba(31, 183, 166, 0.25);
+            border-radius: 10px;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        #userStatus strong {
+            color: var(--accent);
+        }
+
+        @media (max-width: 900px) {
+            nav { padding: 0 20px; }
+            .navbar-container { flex-direction: column; height: auto; padding: 16px 0; gap: 10px; }
+            .navbar-links { flex-wrap: wrap; justify-content: center; }
+            .hero-title { font-size: 44px; }
+            .auth-card { padding: 32px; }
         }
     </style>
 </head>
 <body>
+    <nav>
+        <div class="navbar-container">
+            <a class="navbar-brand" href="/">AICHAT</a>
+            <div class="navbar-links">
+                <div class="user-section" id="userSection" style="display: none;">
+                    <a href="/chat">Chat</a>
+                    <a href="/settings">Settings</a>
+                    <div class="user-profile">
+                        <img id="profileImg" class="profile-img" alt="Profile">
+                        <span id="profileName" class="profile-name"></span>
+                    </div>
+                    <button class="signout-btn" id="logoutBtn">Sign Out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
-        <header>
-            <h1>AI Chat Agent</h1>
-            <p>Powered by Groq AI & Firebase</p>
-        </header>
+        <div class="hero-section">
+            <h1 class="hero-title">AI Chat Agent</h1>
+            <p class="hero-subtitle">High-signal assistants powered by Groq and Firebase.</p>
+        </div>
         
-        <div class="auth-section">
-            <h2>Authentication</h2>
-            <button id="loginBtn">Login with Google</button>
-            <button id="logoutBtn" style="display:none;">Logout</button>
+        <div class="auth-card">
+            <button id="loginBtn">Sign in with Google</button>
             <div id="userStatus"></div>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
-        // Import Firebase functions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.0/firebase-auth.js";
 
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "REDACTED",
-            authDomain: "REDACTED",
-            projectId: "REDACTED",
-            storageBucket: "REDACTED.firebasestorage.app",
-            messagingSenderId: "REDACTED",
-            appId: "1:REDACTED:web:REDACTED"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
-
-        // DOM Elements
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
         const userStatus = document.getElementById('userStatus');
+        const userSection = document.getElementById('userSection');
+        const profileImg = document.getElementById('profileImg');
+        const profileName = document.getElementById('profileName');
 
-        // Login Function
-        loginBtn.addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    console.log('User logged in:', result.user);
+        const syncSession = async (user) => {
+            const res = await fetch('/api/google-login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    email: user.email,
+                    name: user.displayName,
+                    photoURL: user.photoURL
                 })
-                .catch((error) => {
-                    console.error('Login error:', error);
-                    alert('Login failed: ' + error.message);
-                });
-        });
+            });
 
-        // Logout Function
-        logoutBtn.addEventListener('click', () => {
-            signOut(auth)
-                .then(() => {
-                    console.log('User logged out');
-                })
-                .catch((error) => {
-                    console.error('Logout error:', error);
-                });
-        });
-
-        // Monitor Authentication State
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'block';
-                userStatus.innerHTML = `<strong>Welcome, ${user.displayName}!</strong><br>Email: ${user.email}`;
-            } else {
-                loginBtn.style.display = 'block';
-                logoutBtn.style.display = 'none';
-                userStatus.innerHTML = '<em>Not logged in</em>';
+            if (!res.ok) {
+                throw new Error('Session sync failed');
             }
+
+            return res.json();
+        };
+
+        const loadFirebaseConfig = async () => {
+            const res = await fetch('/api/firebase-config', { credentials: 'same-origin' });
+            if (!res.ok) {
+                throw new Error('Failed to load Firebase config');
+            }
+            return res.json();
+        };
+
+        const initFirebase = async () => {
+            const firebaseConfig = await loadFirebaseConfig();
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const provider = new GoogleAuthProvider();
+
+            loginBtn.addEventListener('click', () => {
+                signInWithPopup(auth, provider)
+                    .catch((error) => {
+                        console.error('Login error:', error);
+                        alert('Login failed: ' + error.message);
+                    });
+            });
+
+            logoutBtn.addEventListener('click', () => {
+                signOut(auth)
+                    .then(() => {
+                        fetch('/api/logout', { credentials: 'same-origin' })
+                            .then(() => window.location.href = '/')
+                            .catch(err => console.error('Logout error:', err));
+                    })
+                    .catch((error) => {
+                        console.error('Logout error:', error);
+                    });
+            });
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    loginBtn.style.display = 'none';
+                    userSection.style.display = 'flex';
+                    profileImg.src = user.photoURL || 'https://via.placeholder.com/40';
+                    profileName.textContent = user.displayName || 'User';
+                    userStatus.innerHTML = `<strong>Welcome, ${user.displayName || 'User'}.</strong><br>Email: ${user.email}`;
+
+                    try {
+                        const data = await syncSession(user);
+                        if (data.success) {
+                            window.location.href = '/chat';
+                        }
+                    } catch (error) {
+                        userStatus.textContent = 'Session sync failed. Refresh and try again.';
+                    }
+                } else {
+                    loginBtn.style.display = 'block';
+                    userSection.style.display = 'none';
+                    userStatus.innerHTML = '<em>Not logged in</em>';
+                }
+            });
+        };
+
+        initFirebase().catch((error) => {
+            console.error('Firebase init failed:', error);
+            userStatus.textContent = 'Firebase config failed to load.';
         });
     </script>
 </body>

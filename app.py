@@ -23,6 +23,16 @@ FREE_LIMIT = 100
 
 init_db()
 
+def get_firebase_config():
+    return {
+        "apiKey": os.getenv("FIREBASE_API_KEY"),
+        "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN"),
+        "projectId": os.getenv("FIREBASE_PROJECT_ID"),
+        "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET"),
+        "messagingSenderId": os.getenv("FIREBASE_MESSAGING_SENDER_ID"),
+        "appId": os.getenv("FIREBASE_APP_ID"),
+    }
+
 # ── Pages ──────────────────────────────────────────────────────────────────
 
 @app.route('/')
@@ -33,15 +43,11 @@ def index():
 
 @app.route('/chat')
 def chat_page():
-    if 'user_email' not in session:
-        return redirect('/')
     return render_template('chat.html', user=session.get('user_name'))
 
 @app.route('/settings')
 def settings_page():
-    if 'user_email' not in session:
-        return redirect('/')
-    return render_template('settings.html', user=session.get('user_name'))
+    return render_template('setting.html', user=session.get('user_name'))
 
 # ── Auth ───────────────────────────────────────────────────────────────────
 
@@ -56,6 +62,14 @@ def google_login():
 def logout():
     session.clear()
     return redirect('/')
+
+@app.route('/api/firebase-config')
+def firebase_config():
+    config = get_firebase_config()
+    missing = [key for key, value in config.items() if not value]
+    if missing:
+        return jsonify({"error": "Missing Firebase config", "missing": missing}), 500
+    return jsonify(config)
 
 # ── Chat ───────────────────────────────────────────────────────────────────
 
