@@ -130,4 +130,4 @@ def settings():
     return jsonify(get_integration(session['user_email']))
 
 if __name__ == '__main__':
-    app.run(host='localhost', debug=True)
+    app.run(host='localhost', port=8000, debug=True)
