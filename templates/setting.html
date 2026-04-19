@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Settings</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+        .navbar { background: #6c63ff; color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .navbar a { color: white; text-decoration: none; font-size: 14px; }
+        .container { max-width: 700px; margin: 30px auto; padding: 0 20px; }
+        .card { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
+        .card h3 { color: #6c63ff; margin-bottom: 20px; font-size: 18px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; font-weight: 600; }
+        input, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus { border-color: #6c63ff; }
+        .save-btn {
+            background: #6c63ff;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+        .save-btn:hover { background: #5a52d5; }
+        .success { color: green; font-size: 13px; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h2>⚙️ Settings</h2>
+        <div><a href="/chat">← Back to Chat</a> &nbsp; <a href="/api/logout">Logout</a></div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <h3>📱 WhatsApp Integration</h3>
+            <div class="form-group">
+                <label>WhatsApp Business Number</label>
+                <input type="text" id="wa_number" placeholder="+92 300 1234567">
+            </div>
+            <div class="form-group">
+                <label>WhatsApp API Key</label>
+                <input type="password" id="wa_key" placeholder="Enter your WhatsApp API key">
+            </div>
+            <button class="save-btn" onclick="saveSettings()">Save WhatsApp Settings</button>
+            <p class="success" id="wa_success">✅ Saved successfully!</p>
+        </div>
+
+        <div class="card">
+            <h3>🛒 E-commerce Integration</h3>
+            <div class="form-group">
+                <label>Store Platform</label>
+                <select id="store_type">
+                    <option value="">Select platform...</option>
+                    <option value="shopify">Shopify</option>
+                    <option value="woocommerce">WooCommerce</option>
+                    <option value="magento">Magento</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Store URL</label>
+                <input type="text" id="store_url" placeholder="https://your-store.com">
+            </div>
+            <div class="form-group">
+                <label>Store API Key</label>
+                <input type="password" id="store_key" placeholder="Enter your store API key">
+            </div>
+            <button class="save-btn" onclick="saveSettings()">Save Store Settings</button>
+            <p class="success" id="store_success">✅ Saved successfully!</p>
+        </div>
+    </div>
+
+    <script>
+        async function loadSettings() {
+            const res = await fetch('/api/settings');
+            const data = await res.json();
+            if (data.whatsapp_number) document.getElementById('wa_number').value = data.whatsapp_number;
+            if (data.whatsapp_api_key) document.getElementById('wa_key').value = data.whatsapp_api_key;
+            if (data.store_type) document.getElementById('store_type').value = data.store_type;
+            if (data.store_url) document.getElementById('store_url').value = data.store_url;
+            if (data.store_api_key) document.getElementById('store_key').value = data.store_api_key;
+        }
+
+        async function saveSettings() {
+            const payload = {
+                whatsapp_number: document.getElementById('wa_number').value,
+                whatsapp_api_key: document.getElementById('wa_key').value,
+                store_type: document.getElementById('store_type').value,
+                store_url: document.getElementById('store_url').value,
+                store_api_key: document.getElementById('store_key').value
+            };
+            await fetch('/api/settings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            document.querySelectorAll('.success').forEach(el => {
+                el.style.display = 'block';
+                setTimeout(() => el.style.display = 'none', 3000);
+            });
+        }
+
+        loadSettings();
+    </script>
+</body>
+</html>
